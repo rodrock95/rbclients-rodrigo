@@ -36,13 +36,8 @@ public class ClientService {
 		return new ClientDTO(entity);
 	}
 
-	//public ClientDTO save() {
-		//Client client = new Client();
-		//client = repository.save(client);
-		//ClientDTO dto = new ClientDTO(client);
-		//return dto;
-	//}
-
+	
+	@Transactional
 	public ClientDTO insert(ClientDTO dto) {
 		Client entity = new Client();
 		entity.setName(dto.getName());
@@ -53,5 +48,24 @@ public class ClientService {
 		entity = repository.save(entity);
 		return new ClientDTO(entity);
 	}
+	
+	@Transactional
+	public ClientDTO update(Long id, ClientDTO dto) {
+		
+		//Recuperar pelo id
+		Client entity = repository.getOne(id);
+		entity.setName(dto.getName());
+		entity.setCpf(dto.getCpf());
+		entity.setIncome(dto.getIncome());
+		entity.setBirthDate(dto.getBirthDate());
+		entity.setChildren(dto.getChildren());
+		//salvar no banco
+		entity = repository.save(entity);
+		return new ClientDTO(entity);
+	}
 
+	public void delete(Long id) {
+		repository.deleteById(id);
+	}
 }
+
