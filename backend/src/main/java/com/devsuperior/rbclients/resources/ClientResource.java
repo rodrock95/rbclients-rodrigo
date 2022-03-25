@@ -81,5 +81,4 @@ public class ClientResource {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	
 }

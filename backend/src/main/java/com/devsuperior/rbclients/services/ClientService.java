@@ -2,7 +2,10 @@ package com.devsuperior.rbclients.services;
 
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -41,7 +44,7 @@ public class ClientService {
 		//ClientDTO dto = new ClientDTO(entity);
 		//return dto;
 		Optional<Client> obj = repository.findById(id);
-		Client entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+		Client entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found")); //erro caso o id nao exista
 		return new ClientDTO(entity);
 	}
 
@@ -60,20 +63,32 @@ public class ClientService {
 	@Transactional
 	public ClientDTO update(Long id, ClientDTO dto) {
 		
-		//Recuperar pelo id
-		Client entity = repository.getOne(id);
-		entity.setName(dto.getName());
-		entity.setCpf(dto.getCpf());
-		entity.setIncome(dto.getIncome());
-		entity.setBirthDate(dto.getBirthDate());
-		entity.setChildren(dto.getChildren());
-		//salvar no banco
-		entity = repository.save(entity);
-		return new ClientDTO(entity);
+		try {
+			//Recuperar pelo id
+			Client entity = repository.getOne(id);
+			entity.setName(dto.getName());
+			entity.setCpf(dto.getCpf());
+			entity.setIncome(dto.getIncome());
+			entity.setBirthDate(dto.getBirthDate());
+			entity.setChildren(dto.getChildren());
+			//salvar no banco
+			entity = repository.save(entity);
+			return new ClientDTO(entity);
+			
+		} catch(EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id not found" + id);
+		}
+		
 	}
 
 	public void delete(Long id) {
-		repository.deleteById(id);
+		
+		try {
+			repository.deleteById(id);
+			
+		} catch(EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Id not found" + id);
+		}
 	}
 }
 
