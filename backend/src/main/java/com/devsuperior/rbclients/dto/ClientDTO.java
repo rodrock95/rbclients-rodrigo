@@ -1,10 +1,12 @@
 package com.devsuperior.rbclients.dto;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import com.devsuperior.rbclients.entities.Client;
 
-public class ClientDTO {
+public class ClientDTO implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private String name;
