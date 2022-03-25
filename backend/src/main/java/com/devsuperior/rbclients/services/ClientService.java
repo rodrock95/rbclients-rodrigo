@@ -1,10 +1,10 @@
 package com.devsuperior.rbclients.services;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,12 +18,20 @@ public class ClientService {
 	@Autowired
 	private ClientRepository repository;
 
+	/*
 	@Transactional(readOnly = true)
 	public List<ClientDTO> findAll() {
 		List<Client> list = repository.findAll();
 		//converter Client para ClientDTO
 		List<ClientDTO> listDto = list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
 		return listDto;
+	}
+	*/
+	@Transactional(readOnly = true)
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Client> page = repository.findAll(pageRequest);
+		Page<ClientDTO> pageDTO = page.map(x -> new ClientDTO(x));
+		return pageDTO;
 	}
 
 	@Transactional(readOnly = true)
@@ -68,4 +76,5 @@ public class ClientService {
 		repository.deleteById(id);
 	}
 }
+
 
